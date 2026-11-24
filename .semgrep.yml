@@ -1,0 +1,18 @@
+rules:
+  - id: javascript-no-eval
+    languages: [javascript, typescript]
+    message: No ejecutar texto como código.
+    severity: ERROR
+    pattern: eval(...)
+  - id: react-no-dangerous-html
+    languages: [typescript]
+    message: Evitar HTML sin sanitizar en React.
+    severity: ERROR
+    pattern: <$X dangerouslySetInnerHTML={...} />
+  - id: no-hardcoded-private-key
+    languages: [generic]
+    message: Posible clave privada incluida en el repositorio.
+    severity: ERROR
+    pattern-regex: "-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----"
+    paths:
+      exclude: ["node_modules/**", ".next/**"]

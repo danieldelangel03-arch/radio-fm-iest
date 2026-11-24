@@ -1,0 +1,9 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Placeholder histórico de SESSION_SECRET, nunca fue un secreto"
+condition = "AND"
+regexTarget = "match"
+regexes = ['''SESSION_SECRET=genera-al-menos-32-caracteres-aleatorios''']
+paths = ['''^\.env\.example$''']

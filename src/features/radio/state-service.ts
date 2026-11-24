@@ -1,10 +1,12 @@
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { announcements, radioState, roundOptions, rounds, songs, votes } from "@/db/schema";
+import { getCampusTemperature } from "@/features/seleccion/weather";
 import { advanceRadio } from "./postgres-engine";
 
 export async function getPublicState() {
-  await advanceRadio();
+  const temperatureC = await getCampusTemperature().catch(() => undefined);
+  await advanceRadio({ temperatureC });
   const db = getDb();
   const [state] = await db.select().from(radioState).where(eq(radioState.id, 1));
   if (!state) throw new Error("Radio sin inicializar");
@@ -54,6 +56,7 @@ export async function getPublicState() {
   return {
     version: state.version,
     status: state.status,
+    temperatureC,
     currentSong: currentSong ?? null,
     currentAnnouncement: currentAnnouncement ?? null,
     round: round

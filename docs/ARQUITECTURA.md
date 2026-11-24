@@ -8,7 +8,7 @@ flowchart LR
   API -->|transacción + FOR UPDATE| PG[(PostgreSQL)]
   API -. evento opcional .-> PU[Pusher Channels]
   P --> YT[YouTube IFrame visible]
-  API --> OM[Open-Meteo pendiente]
+  API --> OM[Open-Meteo · caché 15 min]
   API --> GT[Gemini TTS opcional]
   GT --> BL[Vercel Blob opcional]
 ```
@@ -17,4 +17,4 @@ PostgreSQL es la única autoridad. `radio_state` es singleton; cada cierre bloqu
 
 Sin Pusher se mantiene polling; sin Gemini/Blob se muestra texto y usa `speechSynthesis`; sin BD las páginas renderizan y muestran error, y APIs responden 503.
 
-Pendiente: abrir primera/siguientes rondas con el selector; conectar Open-Meteo; reportar eventos reales del IFrame; CRUD completo de catálogo/reglas/eventos; restauración web; prueba concurrente PostgreSQL.
+Pendiente: reportar eventos reales del IFrame; CRUD completo de catálogo/reglas/eventos; restauración web; prueba concurrente PostgreSQL.

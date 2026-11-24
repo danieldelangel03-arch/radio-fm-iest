@@ -10,7 +10,7 @@ export type ContextSong = {
   fallback: boolean;
 };
 
-export type CampusEvent = { kind: "exam" | "holiday" | "institutional"; theme?: string };
+type CampusEvent = { kind: "exam" | "holiday" | "institutional"; theme?: string };
 export type SelectionContext = {
   now: Date;
   temperatureC?: number;

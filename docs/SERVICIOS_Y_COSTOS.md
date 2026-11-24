@@ -9,7 +9,7 @@ Consulta: 24 de noviembre de 2026. Presupuesto activado por Codex: **0 USD**. Lo
 | Pusher | Sandbox: 100 conexiones y 200 000 mensajes/día: [pricing](https://pusher.com/channels/pricing/). |
 | Blob | Hobby: 1 GB/mes, 10 000 operaciones simples y 2 000 avanzadas: [uso](https://vercel.com/docs/vercel-blob/usage-and-pricing). |
 | Gemini TTS | Modelo inicial `gemini-3.8-flash-lite-tts`: [documentación](https://aistudio.google.com/docs/speech-generation). Verifica cuota. |
-| Open-Meteo | Free no comercial: 10 000/día, 5 000/h, 600/min y CC BY 4.0: [términos](https://open-meteo.com/en/terms). Integración pendiente. |
+| Open-Meteo | Free no comercial: 10 000/día, 5 000/h, 600/min y CC BY 4.0: [términos](https://open-meteo.com/en/terms). Caché de 15 min. |
 | YouTube | Sin descarga; cumple [políticas](https://developers.google.com/youtube/terms/developer-policies) y reproductor visible. |
 
 El uso institucional puede no calificar como Hobby/no comercial. Confírmalo antes de operar.

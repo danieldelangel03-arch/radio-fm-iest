@@ -4,11 +4,17 @@ const optionalText = z.preprocess(
   (value) => (value === "" ? undefined : value),
   z.string().optional(),
 );
+const optionalNumber = z.preprocess(
+  (value) => (value === "" || value === undefined ? undefined : Number(value)),
+  z.number().finite().optional(),
+);
 const serverSchema = z.object({
   DATABASE_URL: z.string().min(1, "Falta DATABASE_URL"),
   ADMIN_PASSWORD: z.string().min(8, "ADMIN_PASSWORD debe tener al menos 8 caracteres"),
   SESSION_SECRET: z.string().min(32, "SESSION_SECRET debe tener al menos 32 caracteres"),
   NEXT_PUBLIC_APP_URL: optionalText,
+  CAMPUS_LATITUDE: optionalNumber,
+  CAMPUS_LONGITUDE: optionalNumber,
   PUSHER_APP_ID: optionalText,
   PUSHER_KEY: optionalText,
   PUSHER_SECRET: optionalText,

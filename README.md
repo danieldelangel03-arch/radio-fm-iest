@@ -4,7 +4,7 @@ Radio inteligente e interactiva para un campus universitario. Monolito modular e
 
 ## Estado honesto
 
-Están implementados persistencia, seguridad, algoritmo contextual, UI, polling/Pusher opcional, YouTube, TTS y respaldos. No se verificaron PostgreSQL real, migración/semilla, ronda integral con varios celulares, claves externas ni despliegue. La apertura automática de nuevas rondas y la consulta efectiva de Open-Meteo requieren completar integración; hoy el motor cierra rondas existentes idempotentemente. La importación JSON valida pero no sobrescribe la BD: la restauración completa se realiza con `pg_restore`.
+Están implementados persistencia, seguridad, algoritmo contextual, clima Open-Meteo, ciclo perezoso de rondas, UI, polling/Pusher opcional, YouTube, TTS y respaldos. No se verificaron PostgreSQL real, migración/semilla, ronda integral con varios celulares, claves externas ni despliegue. La importación JSON valida pero no sobrescribe la BD: la restauración completa se realiza con `pg_restore`.
 
 ## Instalación local
 
