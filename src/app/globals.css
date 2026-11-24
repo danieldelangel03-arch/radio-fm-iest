@@ -361,3 +361,121 @@ textarea {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
 }
+.login-shell {
+  width: min(32rem, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 12vh 0;
+  display: grid;
+  gap: 1rem;
+}
+.login-shell h1 {
+  font-size: clamp(3rem, 12vw, 6rem);
+}
+.login-shell input,
+.admin-shell select {
+  min-height: 3rem;
+  padding: 0.75rem;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  color: var(--texto);
+}
+.admin-shell {
+  width: min(90rem, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 5rem;
+}
+.admin-shell > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.admin-shell h1 {
+  font-size: clamp(2.75rem, 7vw, 6rem);
+}
+.status-pill {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--acento);
+  color: var(--acento);
+  text-transform: uppercase;
+}
+.metric-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin: 2rem 0;
+  background: var(--borde);
+}
+.metric-row article {
+  display: grid;
+  padding: 1.5rem;
+  background: var(--superficie);
+}
+.metric-row strong {
+  font-size: 2.5rem;
+}
+.metric-row span {
+  color: var(--muted);
+}
+.admin-section {
+  padding: 1.5rem;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+}
+.admin-section h2 {
+  margin-top: 0;
+}
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.button-row button {
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--borde);
+  background: var(--fondo);
+  color: var(--texto);
+  cursor: pointer;
+}
+.button-row button:hover,
+.button-row button:focus-visible {
+  border-color: var(--acento);
+}
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.admin-section ul {
+  padding-left: 1.25rem;
+  color: var(--muted);
+}
+.table-scroll {
+  max-height: 28rem;
+  overflow: auto;
+}
+.admin-section table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.admin-section th,
+.admin-section td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--borde);
+}
+.admin-section th {
+  position: sticky;
+  top: 0;
+  background: var(--superficie);
+  color: var(--acento);
+}
+@media (max-width: 50rem) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+  .metric-row {
+    grid-template-columns: 1fr;
+  }
+}
