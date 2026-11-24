@@ -11,5 +11,5 @@
     "drizzle.config.ts"
   ],
   "project": ["src/**/*.{ts,tsx}", "scripts/**/*.ts", "tests/**/*.ts"],
-  "ignoreDependencies": ["@google/genai", "@vercel/blob", "pusher", "pusher-js", "qrcode.react"]
+  "ignoreDependencies": ["@google/genai", "@vercel/blob", "pusher-js", "qrcode.react"]
 }
