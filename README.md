@@ -4,7 +4,7 @@ Radio inteligente e interactiva para un campus universitario. Monolito modular e
 
 ## Estado honesto
 
-Están implementados persistencia, seguridad, algoritmo contextual, clima Open-Meteo, ciclo perezoso de rondas, UI, polling/Pusher opcional, YouTube, TTS y respaldos. PostgreSQL real, migraciones, semilla y lectura integral de estado se verificaron contra Neon. No se verificaron una ronda con varios celulares, claves externas opcionales ni despliegue de la aplicación en Vercel. La importación JSON valida pero no sobrescribe la BD: la restauración completa se realiza con `pg_restore`.
+Están implementados persistencia, seguridad, algoritmo contextual, clima Open-Meteo, ciclo perezoso de rondas, UI, polling/Pusher opcional, YouTube, TTS y respaldos. Neon y el despliegue de producción en Vercel están verificados, incluidos login administrativo, voto real y reproducción automática silenciada. Siguen pendientes la demostración con varios celulares, el CRUD completo de catálogo/reglas/eventos, la programación automática de anuncios y las claves externas opcionales de Pusher, Gemini y Blob. La importación JSON valida pero no sobrescribe la BD: la restauración completa se realiza con `pg_restore`.
 
 ## Instalación local
 
