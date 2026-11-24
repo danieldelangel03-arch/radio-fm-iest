@@ -1,3 +1,4 @@
+import nextEnv from "@next/env";
 import { eq } from "drizzle-orm";
 import { getDb, getPool } from "../src/db/client";
 import {
@@ -11,6 +12,8 @@ import {
   songs,
 } from "../src/db/schema";
 import { seedSongs } from "../src/db/seed-data";
+
+nextEnv.loadEnvConfig(process.cwd());
 
 async function main(): Promise<void> {
   const db = getDb();

@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "next dev",
+    "dev:neon": "neon-env run -- next dev",
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
@@ -26,7 +27,11 @@
   },
   "dependencies": {
     "@google/genai": "2.24.0",
+    "@neon/config": "^1.14.6",
+    "@neon/env": "^2.1.9",
+    "@next/env": "16.4.6",
     "@vercel/blob": "2.4.0",
+    "@vercel/functions": "3.11.3",
     "drizzle-orm": "0.45.4",
     "next": "16.4.6",
     "pg": "8.23.1",

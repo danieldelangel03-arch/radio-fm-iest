@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { getServerEnv, resetEnvForTests } from "./env";
+import { getMigrationDatabaseUrl, getServerEnv, resetEnvForTests } from "./env";
 
 const original = { ...process.env };
 afterEach(() => {
@@ -21,5 +21,15 @@ describe("entorno", () => {
       PUSHER_KEY: "",
     });
     expect(getServerEnv().PUSHER_KEY).toBeUndefined();
+  });
+  it("prefiere la conexión directa para migraciones", () => {
+    process.env.DATABASE_URL = "postgresql://pooler/radio";
+    process.env.DATABASE_URL_UNPOOLED = "postgresql://direct/radio";
+    expect(getMigrationDatabaseUrl()).toBe("postgresql://direct/radio");
+  });
+  it("mantiene compatibilidad local cuando solo existe DATABASE_URL", () => {
+    process.env.DATABASE_URL = "postgresql://localhost/radio";
+    delete process.env.DATABASE_URL_UNPOOLED;
+    expect(getMigrationDatabaseUrl()).toBe("postgresql://localhost/radio");
   });
 });

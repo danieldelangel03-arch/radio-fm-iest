@@ -20,8 +20,8 @@ export async function advanceRadio(
     const [state] = await tx.select().from(radioState).where(eq(radioState.id, 1));
     if (!state) throw new Error("radio_state no está inicializado; ejecuta npm run db:seed");
     if (state.status === "paused") return { version: state.version, changed: false };
-    const nowResult = await tx.execute<{ now: Date }>(sql`select now() as now`);
-    const [{ now }] = nowResult.rows;
+    const nowResult = await tx.execute<{ now: Date | string }>(sql`select now() as now`);
+    const now = normalizeDatabaseNow(nowResult.rows[0]?.now);
 
     if (!state.currentRoundId) {
       const candidates = await tx
@@ -147,4 +147,10 @@ export async function advanceRadio(
       .returning({ version: radioState.version });
     return { version: updated.version, changed: true };
   });
+}
+
+export function normalizeDatabaseNow(value: Date | string | undefined): Date {
+  const date = value instanceof Date ? value : new Date(value ?? Number.NaN);
+  if (Number.isNaN(date.getTime())) throw new Error("Postgres devolvió una fecha inválida");
+  return date;
 }

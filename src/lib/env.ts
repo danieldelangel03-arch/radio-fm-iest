@@ -10,6 +10,7 @@ const optionalNumber = z.preprocess(
 );
 const serverSchema = z.object({
   DATABASE_URL: z.string().min(1, "Falta DATABASE_URL"),
+  DATABASE_URL_UNPOOLED: optionalText,
   ADMIN_PASSWORD: z.string().min(8, "ADMIN_PASSWORD debe tener al menos 8 caracteres"),
   SESSION_SECRET: z.string().min(32, "SESSION_SECRET debe tener al menos 32 caracteres"),
   NEXT_PUBLIC_APP_URL: optionalText,
@@ -40,6 +41,12 @@ export function getServerEnv(): ServerEnv {
 }
 export function getDatabaseUrl(): string {
   return z.string().min(1, "Falta DATABASE_URL").parse(process.env.DATABASE_URL);
+}
+export function getMigrationDatabaseUrl(): string {
+  return z
+    .string()
+    .min(1, "Falta DATABASE_URL_UNPOOLED o DATABASE_URL")
+    .parse(process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL);
 }
 export function resetEnvForTests(): void {
   cached = undefined;

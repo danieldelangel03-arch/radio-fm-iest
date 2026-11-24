@@ -22,3 +22,4 @@ Thumbs.db
 
 # Drizzle local
 drizzle/meta/_journal.json.bak
+.neon

@@ -8,7 +8,8 @@
     "playwright.config.ts",
     "vitest.config.ts",
     "next.config.ts",
-    "drizzle.config.ts"
+    "drizzle.config.ts",
+    "neon.ts"
   ],
   "project": ["src/**/*.{ts,tsx}", "scripts/**/*.ts", "tests/**/*.ts"],
   "ignoreDependencies": []
