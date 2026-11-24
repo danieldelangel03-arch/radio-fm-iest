@@ -1,6 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { loginAttempts } from "@/db/schema";
+import { normalizeDatabaseTimestamp } from "@/db/timestamp";
 import { getServerEnv } from "@/lib/env";
 import { hashIdentifier, safeEqual } from "@/lib/security";
 
@@ -14,8 +15,8 @@ export async function verifyAdminPassword(
     await tx.execute(
       sql`select identity_hash from login_attempts where identity_hash = ${identityHash} for update`,
     );
-    const nowResult = await tx.execute<{ now: Date }>(sql`select now() as now`);
-    const now = nowResult.rows[0].now;
+    const nowResult = await tx.execute<{ now: Date | string }>(sql`select now() as now`);
+    const now = normalizeDatabaseTimestamp(nowResult.rows[0]?.now);
     const [attempt] = await tx
       .select()
       .from(loginAttempts)

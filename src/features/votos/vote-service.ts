@@ -1,6 +1,7 @@
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { roundOptions, rounds, votes } from "@/db/schema";
+import { normalizeDatabaseTimestamp } from "@/db/timestamp";
 
 export async function registerVote(input: {
   roundId: string;
@@ -9,8 +10,8 @@ export async function registerVote(input: {
   networkHash?: string;
 }) {
   return getDb().transaction(async (tx) => {
-    const nowResult = await tx.execute<{ now: Date }>(sql`select now() as now`);
-    const now = nowResult.rows[0].now;
+    const nowResult = await tx.execute<{ now: Date | string }>(sql`select now() as now`);
+    const now = normalizeDatabaseTimestamp(nowResult.rows[0]?.now);
     const [round] = await tx
       .select()
       .from(rounds)

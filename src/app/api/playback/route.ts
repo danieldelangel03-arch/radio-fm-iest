@@ -2,6 +2,7 @@ import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/client";
 import { auditLog, radioState } from "@/db/schema";
+import { normalizeDatabaseTimestamp } from "@/db/timestamp";
 import { assertSameOrigin } from "@/lib/security";
 
 const schema = z.object({
@@ -16,8 +17,8 @@ export async function POST(request: Request): Promise<Response> {
     const input = schema.parse(await request.json());
     const result = await getDb().transaction(async (tx) => {
       await tx.execute(sql`select id from radio_state where id = 1 for update`);
-      const nowResult = await tx.execute<{ now: Date }>(sql`select now() as now`);
-      const now = nowResult.rows[0].now;
+      const nowResult = await tx.execute<{ now: Date | string }>(sql`select now() as now`);
+      const now = normalizeDatabaseTimestamp(nowResult.rows[0]?.now);
       const [state] = await tx.select().from(radioState).where(eq(radioState.id, 1));
       if (!state) throw new Error("Radio sin inicializar");
       const ownedByOther =

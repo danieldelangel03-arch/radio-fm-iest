@@ -42,17 +42,23 @@ export function PublicScreen({ voteUrl }: { voteUrl: string }) {
           {audio && data?.currentAnnouncement?.audioUrl ? (
             // biome-ignore lint/a11y/useMediaCaption: el texto íntegro se muestra junto al reproductor.
             <audio controls autoPlay src={data.currentAnnouncement.audioUrl} />
-          ) : audio && data?.currentSong ? (
-            <iframe
-              title={`Reproductor de ${data.currentSong.title}`}
-              src={`https://www.youtube.com/embed/${data.currentSong.youtubeId}?autoplay=1&enablejsapi=1`}
-              allow="autoplay; encrypted-media"
-              allowFullScreen
-            />
+          ) : data?.currentSong ? (
+            <>
+              <iframe
+                key={`${data.currentSong.id}-${audio ? "sound" : "muted"}`}
+                title={`Reproductor de ${data.currentSong.title}`}
+                src={`https://www.youtube.com/embed/${data.currentSong.youtubeId}?autoplay=1&mute=${audio ? 0 : 1}&playsinline=1&rel=0`}
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              />
+              {!audio && (
+                <button className="audio-button" type="button" onClick={() => setAudio(true)}>
+                  Activar sonido
+                </button>
+              )}
+            </>
           ) : (
-            <button className="audio-button" type="button" onClick={() => setAudio(true)}>
-              Activar audio
-            </button>
+            <p>Esperando una canción</p>
           )}
         </div>
       </section>
