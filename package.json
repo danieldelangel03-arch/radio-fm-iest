@@ -1,0 +1,55 @@
+{
+  "name": "radio-campus",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Radio inteligente e interactiva para un campus universitario",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "check:format": "biome check .",
+    "check:arch": "depcruise src --config .dependency-cruiser.cjs",
+    "check:unused": "knip",
+    "verify": "npm run check:format && npm run typecheck && npm test && npm run check:arch && npm run check:unused",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts"
+  },
+  "dependencies": {
+    "@google/genai": "2.24.0",
+    "@vercel/blob": "2.4.0",
+    "drizzle-orm": "0.45.4",
+    "next": "16.4.6",
+    "pg": "8.23.1",
+    "pusher": "5.3.2",
+    "pusher-js": "8.4.0",
+    "qrcode.react": "4.2.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.8",
+    "@playwright/test": "1.65.1",
+    "@types/node": "24.10.1",
+    "@types/pg": "8.15.6",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "@vitest/coverage-v8": "5.1.1",
+    "dependency-cruiser": "18.9.0",
+    "drizzle-kit": "0.31.11",
+    "knip": "6.48.0",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "vitest": "5.1.1"
+  }
+}

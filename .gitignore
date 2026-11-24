@@ -1,0 +1,24 @@
+# Dependencias y compilación
+node_modules/
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+
+# Variables y secretos
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Editores y sistema
+.DS_Store
+Thumbs.db
+*.log
+*.tsbuildinfo
+.idea/
+.vscode/
+
+# Drizzle local
+drizzle/meta/_journal.json.bak
