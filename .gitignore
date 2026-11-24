@@ -10,6 +10,7 @@ test-results/
 .env
 .env.local
 .env.*.local
+.admin-password.clixml
 !.env.example
 
 # Editores y sistema
