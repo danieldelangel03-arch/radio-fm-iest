@@ -13,6 +13,11 @@ export function PublicScreen({ voteUrl }: { voteUrl: string }) {
   const remaining = data?.round
     ? Math.max(0, Math.ceil((new Date(data.round.closesAt).getTime() - now) / 1_000))
     : 0;
+  useEffect(() => {
+    if (!audio || !data?.currentAnnouncement || data.currentAnnouncement.audioUrl) return;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(data.currentAnnouncement.text));
+  }, [audio, data?.currentAnnouncement]);
   return (
     <main className="screen-shell">
       <header className="screen-header">
@@ -23,13 +28,21 @@ export function PublicScreen({ voteUrl }: { voteUrl: string }) {
       <section className="now-playing">
         <div>
           <p className="eyebrow">Al aire</p>
-          <h1>{data?.currentSong?.title ?? "Preparando la señal"}</h1>
+          <h1>
+            {data?.currentAnnouncement?.title ?? data?.currentSong?.title ?? "Preparando la señal"}
+          </h1>
           <p className="artist">
-            {data?.currentSong?.artist ?? "Conecta la base y ejecuta la semilla"}
+            {data?.currentAnnouncement
+              ? "Anuncio institucional"
+              : (data?.currentSong?.artist ?? "Conecta la base y ejecuta la semilla")}
           </p>
+          {data?.currentAnnouncement && <p>{data.currentAnnouncement.text}</p>}
         </div>
         <div className="player-frame">
-          {audio && data?.currentSong ? (
+          {audio && data?.currentAnnouncement?.audioUrl ? (
+            // biome-ignore lint/a11y/useMediaCaption: el texto íntegro se muestra junto al reproductor.
+            <audio controls autoPlay src={data.currentAnnouncement.audioUrl} />
+          ) : audio && data?.currentSong ? (
             <iframe
               title={`Reproductor de ${data.currentSong.title}`}
               src={`https://www.youtube.com/embed/${data.currentSong.youtubeId}?autoplay=1&enablejsapi=1`}

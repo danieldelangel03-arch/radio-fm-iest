@@ -4,6 +4,12 @@ export type RadioStateDto = {
   version: number;
   status: string;
   currentSong: null | { id: string; title: string; artist: string; youtubeId: string };
+  currentAnnouncement: null | {
+    id: string;
+    title: string;
+    text: string;
+    audioUrl: string | null;
+  };
   round: null | {
     id: string;
     status: string;

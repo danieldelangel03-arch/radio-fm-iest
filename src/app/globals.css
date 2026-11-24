@@ -479,3 +479,15 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+.notice-editor {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.notice-editor input,
+.notice-editor textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--borde);
+  background: var(--fondo);
+  color: var(--texto);
+}

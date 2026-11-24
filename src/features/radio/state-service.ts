@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db/client";
-import { radioState, roundOptions, rounds, songs, votes } from "@/db/schema";
+import { announcements, radioState, roundOptions, rounds, songs, votes } from "@/db/schema";
 import { advanceRadio } from "./postgres-engine";
 
 export async function getPublicState() {
@@ -18,6 +18,17 @@ export async function getPublicState() {
         })
         .from(songs)
         .where(eq(songs.id, state.currentSongId))
+    : [];
+  const [currentAnnouncement] = state.currentAnnouncementId
+    ? await db
+        .select({
+          id: announcements.id,
+          title: announcements.title,
+          text: announcements.text,
+          audioUrl: announcements.audioUrl,
+        })
+        .from(announcements)
+        .where(eq(announcements.id, state.currentAnnouncementId))
     : [];
   const [round] = state.currentRoundId
     ? await db.select().from(rounds).where(eq(rounds.id, state.currentRoundId))
@@ -44,6 +55,7 @@ export async function getPublicState() {
     version: state.version,
     status: state.status,
     currentSong: currentSong ?? null,
+    currentAnnouncement: currentAnnouncement ?? null,
     round: round
       ? {
           id: round.id,

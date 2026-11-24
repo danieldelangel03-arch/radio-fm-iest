@@ -15,6 +15,8 @@ export function AdminPanel() {
   const [password, setPassword] = useState("");
   const [overview, setOverview] = useState<Overview>();
   const [message, setMessage] = useState("");
+  const [noticeTitle, setNoticeTitle] = useState("");
+  const [noticeText, setNoticeText] = useState("");
   const load = useCallback(async () => {
     const status = await fetch("/api/admin/status", { cache: "no-store" });
     setAuthenticated(status.ok);
@@ -53,6 +55,28 @@ export function AdminPanel() {
     });
     setMessage(response.ok ? "Duración guardada" : "No se pudo guardar");
     if (response.ok) void load();
+  };
+  const createNotice = async () => {
+    const response = await fetch("/api/admin/announcements", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: noticeTitle,
+        text: noticeText,
+        approved: true,
+        minIntervalMinutes: 60,
+      }),
+    });
+    setMessage(response.ok ? "Anuncio aprobado y guardado" : "No se pudo crear el anuncio");
+    if (response.ok) {
+      setNoticeTitle("");
+      setNoticeText("");
+      void load();
+    }
+  };
+  const previewVoice = () => {
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(noticeText));
   };
   if (authenticated === null)
     return (
@@ -190,6 +214,30 @@ export function AdminPanel() {
             ))}
           </ul>
         </article>
+      </section>
+      <section className="admin-section notice-editor">
+        <h2>Nuevo anuncio</h2>
+        <label htmlFor="notice-title">Título</label>
+        <input
+          id="notice-title"
+          value={noticeTitle}
+          onChange={(event) => setNoticeTitle(event.target.value)}
+        />
+        <label htmlFor="notice-text">Texto autorizado</label>
+        <textarea
+          id="notice-text"
+          rows={4}
+          value={noticeText}
+          onChange={(event) => setNoticeText(event.target.value)}
+        />
+        <div className="button-row">
+          <button type="button" disabled={!noticeText} onClick={previewVoice}>
+            Vista previa del navegador
+          </button>
+          <button type="button" disabled={!noticeTitle || !noticeText} onClick={createNotice}>
+            Aprobar y guardar
+          </button>
+        </div>
       </section>
     </main>
   );
