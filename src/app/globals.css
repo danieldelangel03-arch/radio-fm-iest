@@ -274,3 +274,90 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+.mobile-shell {
+  width: min(34rem, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+}
+.mobile-shell header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.mobile-shell h1 {
+  margin-top: 3rem;
+  font-size: clamp(3rem, 15vw, 5rem);
+}
+.mobile-lead {
+  color: var(--muted);
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+.mobile-shell fieldset {
+  display: grid;
+  gap: 0.75rem;
+  margin: 2rem 0 1rem;
+  padding: 0;
+  border: 0;
+}
+.vote-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.25rem;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  cursor: pointer;
+}
+.vote-card.selected {
+  border-color: var(--acento);
+  outline: 2px solid var(--acento);
+}
+.vote-card input {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--acento);
+}
+.vote-card span {
+  display: grid;
+  gap: 0.25rem;
+}
+.vote-card small {
+  color: var(--acento);
+  text-transform: uppercase;
+}
+.vote-card strong {
+  font-size: 1.4rem;
+}
+.vote-card em {
+  color: var(--muted);
+  font-style: normal;
+}
+.vote-submit {
+  width: 100%;
+}
+.vote-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.notice,
+.form-message {
+  margin: 2rem 0;
+  padding: 1rem;
+  border-left: 4px solid var(--acento);
+  background: var(--superficie);
+}
+.back-link {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: var(--acento);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
