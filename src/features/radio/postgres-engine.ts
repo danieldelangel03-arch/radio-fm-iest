@@ -1,6 +1,7 @@
 import { and, asc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import {
+  announcements,
   playbackQueue,
   radioState,
   roundOptions,
@@ -10,8 +11,10 @@ import {
   votes,
 } from "@/db/schema";
 import { normalizeDatabaseTimestamp } from "@/db/timestamp";
+import { isAnnouncementEligible } from "@/features/anuncios/schedule";
 import { selectContextualOptions } from "@/features/seleccion/contextual";
 import { resolveRoundWinner } from "./engine";
+import { nextPlaybackState } from "./playback";
 
 export async function advanceRadio(
   context: { temperatureC?: number } = {},
@@ -98,14 +101,16 @@ export async function advanceRadio(
           .update(playbackQueue)
           .set({ status: "playing", updatedAt: now })
           .where(eq(playbackQueue.id, next.id));
+      const playback = next ? nextPlaybackState(next, now) : undefined;
       const [updated] = await tx
         .update(radioState)
         .set({
           currentRoundId: null,
-          currentSongId: next?.songId ?? null,
+          currentSongId: playback?.currentSongId ?? null,
+          currentAnnouncementId: playback?.currentAnnouncementId ?? null,
           status: next ? "playing" : "idle",
           startedAt: next ? now : null,
-          expectedEndsAt: next ? new Date(now.getTime() + 240_000) : null,
+          expectedEndsAt: playback?.expectedEndsAt ?? null,
           version: state.version + 1,
           updatedAt: now,
         })
@@ -135,6 +140,24 @@ export async function advanceRadio(
       .update(rounds)
       .set({ status: "closed", closedAt: now, winnerSongId, updatedAt: now })
       .where(and(eq(rounds.id, round.id), eq(rounds.status, "open")));
+    const eligibleAnnouncements = (await tx
+      .select()
+      .from(announcements)
+      .where(eq(announcements.approved, true)))
+      .filter((announcement) => isAnnouncementEligible(announcement, now));
+    const announcement = eligibleAnnouncements[0];
+    if (announcement) {
+      await tx.insert(playbackQueue).values({
+        kind: "announcement",
+        announcementId: announcement.id,
+        position: sql`coalesce((select max(position) from playback_queue), 0) + 1`,
+        source: "automatic-announcement",
+      });
+      await tx
+        .update(announcements)
+        .set({ lastPlayedAt: now, updatedAt: now })
+        .where(eq(announcements.id, announcement.id));
+    }
     await tx.insert(playbackQueue).values({
       kind: "song",
       songId: winnerSongId,
