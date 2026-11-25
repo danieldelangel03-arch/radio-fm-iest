@@ -46,7 +46,7 @@ export function getMigrationDatabaseUrl(): string {
   return z
     .string()
     .min(1, "Falta DATABASE_URL_UNPOOLED o DATABASE_URL")
-    .parse(process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL);
+    .parse(process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL);
 }
 export function resetEnvForTests(): void {
   cached = undefined;

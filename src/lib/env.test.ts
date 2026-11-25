@@ -32,4 +32,9 @@ describe("entorno", () => {
     delete process.env.DATABASE_URL_UNPOOLED;
     expect(getMigrationDatabaseUrl()).toBe("postgresql://localhost/radio");
   });
+  it("usa DATABASE_URL cuando la conexión directa está vacía", () => {
+    process.env.DATABASE_URL = "postgresql://localhost/radio";
+    process.env.DATABASE_URL_UNPOOLED = "";
+    expect(getMigrationDatabaseUrl()).toBe("postgresql://localhost/radio");
+  });
 });
