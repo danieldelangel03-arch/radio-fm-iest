@@ -14,7 +14,7 @@ import { normalizeDatabaseTimestamp } from "@/db/timestamp";
 import { isAnnouncementEligible } from "@/features/anuncios/schedule";
 import { selectContextualOptions } from "@/features/seleccion/contextual";
 import { resolveRoundWinner } from "./engine";
-import { nextPlaybackState } from "./playback";
+import { nextPlaybackState, startRoundPlayback } from "./playback";
 
 export async function advanceRadio(
   context: { temperatureC?: number } = {},
@@ -67,16 +67,21 @@ export async function advanceRadio(
         })),
       );
       const initialSong = candidates.find((song) => song.id === selection.options[0].id);
+      const playback = startRoundPlayback(
+        state.currentSongId,
+        selection.options[0].id,
+        now,
+        initialSong?.durationSeconds ?? 240,
+      );
       const [updated] = await tx
         .update(radioState)
         .set({
           currentRoundId: created.id,
-          currentSongId: state.currentSongId ?? selection.options[0].id,
+          currentAnnouncementId: playback.currentAnnouncementId,
+          currentSongId: playback.currentSongId,
           status: "playing",
-          startedAt: state.startedAt ?? now,
-          expectedEndsAt:
-            state.expectedEndsAt ??
-            new Date(now.getTime() + (initialSong?.durationSeconds ?? 240) * 1000),
+          startedAt: state.startedAt ?? playback.startedAt,
+          expectedEndsAt: state.expectedEndsAt ?? playback.expectedEndsAt,
           version: state.version + 1,
           updatedAt: now,
         })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { nextPlaybackState } from "./playback";
+import { nextPlaybackState, startRoundPlayback } from "./playback";
 
 const now = new Date("2026-11-24T18:00:00.000Z");
 
@@ -21,6 +21,15 @@ describe("reproducción en cola", () => {
       currentAnnouncementId: null,
       currentSongId: "song-1",
       expectedEndsAt: new Date("2026-11-24T18:04:00.000Z"),
+    });
+  });
+
+  it("limpia el anuncio anterior cuando inicia una nueva ronda musical", () => {
+    expect(startRoundPlayback(null, "song-1", now, 240)).toEqual({
+      currentAnnouncementId: null,
+      currentSongId: "song-1",
+      expectedEndsAt: new Date("2026-11-24T18:04:00.000Z"),
+      startedAt: now,
     });
   });
 });

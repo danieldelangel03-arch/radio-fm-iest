@@ -17,3 +17,17 @@ export function nextPlaybackState(item: QueueItem, now: Date) {
     expectedEndsAt: new Date(now.getTime() + 240_000),
   };
 }
+
+export function startRoundPlayback(
+  currentSongId: string | null,
+  selectedSongId: string,
+  now: Date,
+  durationSeconds: number,
+) {
+  return {
+    currentAnnouncementId: null,
+    currentSongId: currentSongId ?? selectedSongId,
+    expectedEndsAt: new Date(now.getTime() + durationSeconds * 1000),
+    startedAt: now,
+  };
+}
