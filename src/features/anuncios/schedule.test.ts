@@ -7,7 +7,11 @@ describe("programación de anuncios", () => {
   it("acepta un anuncio aprobado que ya cumplió su intervalo", () => {
     expect(
       isAnnouncementEligible(
-        { approved: true, lastPlayedAt: new Date("2026-11-24T16:30:00.000Z"), minIntervalMinutes: 60 },
+        {
+          approved: true,
+          lastPlayedAt: new Date("2026-11-24T16:30:00.000Z"),
+          minIntervalMinutes: 60,
+        },
         now,
       ),
     ).toBe(true);
@@ -15,10 +19,7 @@ describe("programación de anuncios", () => {
 
   it("omite anuncios no aprobados, fuera de vigencia o reproducidos hace poco", () => {
     expect(
-      isAnnouncementEligible(
-        { approved: false, lastPlayedAt: null, minIntervalMinutes: 60 },
-        now,
-      ),
+      isAnnouncementEligible({ approved: false, lastPlayedAt: null, minIntervalMinutes: 60 }, now),
     ).toBe(false);
     expect(
       isAnnouncementEligible(
@@ -33,7 +34,11 @@ describe("programación de anuncios", () => {
     ).toBe(false);
     expect(
       isAnnouncementEligible(
-        { approved: true, lastPlayedAt: new Date("2026-11-24T17:30:01.000Z"), minIntervalMinutes: 60 },
+        {
+          approved: true,
+          lastPlayedAt: new Date("2026-11-24T17:30:01.000Z"),
+          minIntervalMinutes: 60,
+        },
         now,
       ),
     ).toBe(false);
