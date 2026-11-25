@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { announcements } from "@/db/schema";
 import { getServerEnv } from "@/lib/env";
+import { inlineWavDataUri } from "./audio-url";
 export async function ensureAnnouncementAudio(
   id: string,
 ): Promise<{ audioUrl: string | null; fallbackText: string }> {
@@ -15,8 +16,7 @@ export async function ensureAnnouncementAudio(
   if (notice.audioUrl && notice.audioTextHash === hash)
     return { audioUrl: notice.audioUrl, fallbackText: notice.text };
   const env = getServerEnv();
-  if (!env.GEMINI_API_KEY || !env.BLOB_READ_WRITE_TOKEN)
-    return { audioUrl: null, fallbackText: notice.text };
+  if (!env.GEMINI_API_KEY) return { audioUrl: null, fallbackText: notice.text };
   const client = new GoogleGenAI({
     apiKey: env.GEMINI_API_KEY,
     httpOptions: { apiVersion: "v1beta" },
@@ -29,15 +29,19 @@ export async function ensureAnnouncementAudio(
   });
   const encoded = interaction.output_audio?.data;
   if (!encoded) throw new Error("Gemini no devolvió audio");
-  const blob = await put(`anuncios/${id}-${hash}.wav`, Buffer.from(encoded, "base64"), {
-    access: "public",
-    contentType: "audio/wav",
-    addRandomSuffix: false,
-    token: env.BLOB_READ_WRITE_TOKEN,
-  });
+  const audioUrl = env.BLOB_READ_WRITE_TOKEN
+    ? (
+        await put(`anuncios/${id}-${hash}.wav`, Buffer.from(encoded, "base64"), {
+          access: "public",
+          contentType: "audio/wav",
+          addRandomSuffix: false,
+          token: env.BLOB_READ_WRITE_TOKEN,
+        })
+      ).url
+    : inlineWavDataUri(encoded);
   await db
     .update(announcements)
-    .set({ audioUrl: blob.url, audioTextHash: hash, updatedAt: new Date() })
+    .set({ audioUrl, audioTextHash: hash, updatedAt: new Date() })
     .where(eq(announcements.id, id));
-  return { audioUrl: blob.url, fallbackText: notice.text };
+  return { audioUrl, fallbackText: notice.text };
 }

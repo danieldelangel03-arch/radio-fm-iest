@@ -7,7 +7,7 @@ type Overview = {
   catalog: Array<{ id: string; title: string; artist: string; energy: number; active: boolean }>;
   rules: Array<{ id: string; name: string; priority: number; enabled: boolean }>;
   events: Array<{ id: string; name: string; kind: string }>;
-  announcements: Array<{ id: string; title: string; approved: boolean }>;
+  announcements: Array<{ id: string; title: string; text: string; approved: boolean }>;
   settings: Array<{ key: string; value: unknown }>;
 };
 export function AdminPanel() {
@@ -17,6 +17,9 @@ export function AdminPanel() {
   const [message, setMessage] = useState("");
   const [noticeTitle, setNoticeTitle] = useState("");
   const [noticeText, setNoticeText] = useState("");
+  const [editingNoticeId, setEditingNoticeId] = useState<string>();
+  const [editingNoticeTitle, setEditingNoticeTitle] = useState("");
+  const [editingNoticeText, setEditingNoticeText] = useState("");
   const load = useCallback(async () => {
     const status = await fetch("/api/admin/status", { cache: "no-store" });
     setAuthenticated(status.ok);
@@ -67,16 +70,49 @@ export function AdminPanel() {
         minIntervalMinutes: 60,
       }),
     });
-    setMessage(response.ok ? "Anuncio aprobado y guardado" : "No se pudo crear el anuncio");
-    if (response.ok) {
-      setNoticeTitle("");
-      setNoticeText("");
-      void load();
+    const body = (await response.json()) as { error?: string; id?: string };
+    if (!response.ok) {
+      setMessage(body.error ?? "No se pudo crear el anuncio");
+      return;
     }
+    const audioResponse = body.id
+      ? await fetch(`/api/admin/announcements/${body.id}/audio`, { method: "POST" })
+      : undefined;
+    setMessage(
+      audioResponse?.ok
+        ? "Anuncio aprobado y locución lista"
+        : "Anuncio aprobado; la pantalla usará la voz del navegador",
+    );
+    setNoticeTitle("");
+    setNoticeText("");
+    void load();
   };
   const previewVoice = () => {
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(noticeText));
+  };
+  const startEditingNotice = (notice: Overview["announcements"][number]) => {
+    setEditingNoticeId(notice.id);
+    setEditingNoticeTitle(notice.title);
+    setEditingNoticeText(notice.text);
+  };
+  const saveNotice = async () => {
+    if (!editingNoticeId) return;
+    const response = await fetch(`/api/admin/announcements/${editingNoticeId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: editingNoticeTitle, text: editingNoticeText }),
+    });
+    setMessage(response.ok ? "Noticia actualizada" : "No se pudo actualizar la noticia");
+    if (response.ok) {
+      setEditingNoticeId(undefined);
+      void load();
+    }
+  };
+  const deleteNotice = async (id: string) => {
+    const response = await fetch(`/api/admin/announcements/${id}`, { method: "DELETE" });
+    setMessage(response.ok ? "Noticia eliminada" : "No se pudo eliminar la noticia");
+    if (response.ok) void load();
   };
   if (authenticated === null)
     return (
@@ -209,12 +245,51 @@ export function AdminPanel() {
             ))}
             {overview?.announcements.map((notice) => (
               <li key={notice.id}>
+                <div className="button-row">
+                  <button type="button" onClick={() => startEditingNotice(notice)}>
+                    Editar
+                  </button>
+                  <button type="button" onClick={() => deleteNotice(notice.id)}>
+                    Eliminar
+                  </button>
+                </div>
                 {notice.title} · {notice.approved ? "aprobado" : "pendiente"}
               </li>
             ))}
           </ul>
         </article>
       </section>
+      {editingNoticeId && (
+        <section className="admin-section notice-editor">
+          <h2>Editar noticia</h2>
+          <label htmlFor="edit-notice-title">TÃ­tulo</label>
+          <input
+            id="edit-notice-title"
+            value={editingNoticeTitle}
+            onChange={(event) => setEditingNoticeTitle(event.target.value)}
+          />
+          <label htmlFor="edit-notice-text">Texto autorizado</label>
+          <textarea
+            id="edit-notice-text"
+            rows={4}
+            value={editingNoticeText}
+            onChange={(event) => setEditingNoticeText(event.target.value)}
+          />
+          <div className="button-row">
+            <button type="button" onClick={() => setEditingNoticeId(undefined)}>
+              Cancelar
+            </button>
+            <button
+              className="primary-button"
+              type="button"
+              disabled={!editingNoticeTitle || !editingNoticeText}
+              onClick={saveNotice}
+            >
+              Guardar cambios
+            </button>
+          </div>
+        </section>
+      )}
       <section className="admin-section notice-editor">
         <h2>Nuevo anuncio</h2>
         <label htmlFor="notice-title">Título</label>
